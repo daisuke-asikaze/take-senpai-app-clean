@@ -18,11 +18,16 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-client = OpenAI(api_key="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")
+from openai import OpenAI
+import streamlit as st
+
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # ========== Google Sheets認証 ==========
-creds = Credentials.from_service_account_file(JSON_KEY, scopes=SCOPES)
+import json
+service_account_info = json.loads(st.secrets["GOOGLE_SERVICE_ACCOUNT"])
+creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
 gs_client = gspread.authorize(creds)
 sheet = gs_client.open(SHEET_NAME).worksheet(WORKSHEET_NAME)
 
